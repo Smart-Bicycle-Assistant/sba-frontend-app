@@ -1,21 +1,25 @@
-import React, {useRef, useEffect} from 'react';
-import {SafeAreaView, StyleSheet, Dimensions} from 'react-native';
+import React, {useRef, useEffect, useState} from 'react';
+import {SafeAreaView, StyleSheet, Dimensions, Text} from 'react-native';
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation, {
+  GeolocationResponse,
+} from '@react-native-community/geolocation';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const App = () => {
+const App: React.FC = () => {
   const webRef = useRef<WebView | null>(null);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
 
-  const native_to_web = () => {
-    webRef.current?.postMessage(
-      '전송 데이터(native_to_web): 웹으로 데이터 전송',
-    );
+  const native_to_web = (data: string) => {
+    const message = JSON.stringify(data);
+    webRef.current?.injectJavaScript(`window.postMessage(${message}, '*');`);
   };
 
-  const errorHandler = ({nativeEvent}) =>
+  const errorHandler = ({nativeEvent}: WebViewMessageEvent) =>
     console.warn('WebView error: ', nativeEvent);
 
   const web_to_native = (event: WebViewMessageEvent) => {
@@ -23,27 +27,46 @@ const App = () => {
   };
 
   useEffect(() => {
-    const watchId = Geolocation.watchPosition(
-      position => {
-        const locationData = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        webRef.current?.postMessage(JSON.stringify(locationData));
-      },
-      error => {
-        console.error('Error getting location:', error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-        distanceFilter: 10,
-      },
-    );
+    Geolocation.requestAuthorization();
+
+    const sendLocationToWebView = () => {
+      Geolocation.getCurrentPosition(
+        (position: GeolocationResponse) => {
+          const newLatitude = position.coords.latitude;
+          const newLongitude = position.coords.longitude;
+          const newSpeed = position.coords.speed;
+
+          // 위치 정보를 상태 값으로 업데이트
+          setLatitude(newLatitude);
+          setLongitude(newLongitude);
+          setCurrentSpeed(newSpeed);
+
+          const locationData = {
+            latitude: newLatitude,
+            longitude: newLongitude,
+            currentSpeed: newSpeed,
+          };
+
+          native_to_web(JSON.stringify(locationData));
+        },
+        error => {
+          console.error('Error getting location:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+          distanceFilter: 10,
+        },
+      );
+    };
+
+    sendLocationToWebView();
+
+    const locationInterval = setInterval(sendLocationToWebView, 1000);
 
     return () => {
-      Geolocation.clearWatch(watchId);
+      clearInterval(locationInterval);
     };
   }, []);
 
@@ -52,11 +75,11 @@ const App = () => {
       <WebView
         style={styles.webview}
         ref={webRef}
-        source={{uri: 'http://172.21.34.178:5173/'}}
+        source={{uri: 'http://172.21.34.137:5173/'}}
         javaScriptEnabled={true}
-        onLoad={native_to_web}
+        onLoad={() => native_to_web('WebView Loaded')}
         onError={errorHandler}
-        onMessage={web_to_native}
+        onMessage={event => web_to_native(event)}
       />
     </SafeAreaView>
   );

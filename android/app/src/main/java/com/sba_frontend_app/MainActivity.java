@@ -4,6 +4,9 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
+import android.os.Bundle;
+import android.webkit.WebView;
+import android.webkit.WebSettings;
 
 public class MainActivity extends ReactActivity {
 
@@ -15,6 +18,14 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "sba_frontend_app";
   }
+
+  // protected void onCreate(Bundle savedInstanceState) {
+  //   super.onCreate(savedInstanceState);
+  //   WebView myWebView = (WebView) findViewById(R.id.webview);
+  //   WebSettings webSettings = myWebView.getSettings();
+  //   webSettings.setJavaScriptEnabled(true); // JavaScript 활성화
+  //   webSettings.setDomStorageEnabled(true); // DOM Storage 활성화
+  // }
 
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. Here we use a util class {@link
