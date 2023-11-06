@@ -1,9 +1,18 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, Dimensions, Text} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+  Text,
+  PermissionStatus,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
+import {check} from 'react-native-permissions';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -26,8 +35,33 @@ const App: React.FC = () => {
     console.log('받은 데이터(web_to_native) : ' + event.nativeEvent.data);
   };
 
+  async function requestLocationPermission() {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Permission',
+            message: 'This app needs access to your location for ...',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Location permission granted');
+        } else {
+          console.log('Location permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  }
+
   useEffect(() => {
     Geolocation.requestAuthorization();
+    requestLocationPermission();
 
     const sendLocationToWebView = () => {
       Geolocation.getCurrentPosition(
