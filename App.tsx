@@ -36,7 +36,6 @@ const App: React.FC = () => {
           const newLongitude = position.coords.longitude;
           const newSpeed = position.coords.speed;
 
-          // 위치 정보를 상태 값으로 업데이트
           setLatitude(newLatitude);
           setLongitude(newLongitude);
           setCurrentSpeed(newSpeed);
@@ -44,10 +43,11 @@ const App: React.FC = () => {
           const locationData = {
             latitude: newLatitude,
             longitude: newLongitude,
-            currentSpeed: newSpeed,
+            speed: newSpeed,
           };
 
           native_to_web(JSON.stringify(locationData));
+          console.log(locationData);
         },
         error => {
           console.error('Error getting location:', error);
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
     sendLocationToWebView();
 
-    const locationInterval = setInterval(sendLocationToWebView, 1000);
+    const locationInterval = setInterval(sendLocationToWebView, 6000);
 
     return () => {
       clearInterval(locationInterval);
@@ -72,10 +72,13 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text>{longitude}</Text>
+      <Text>{latitude}</Text>
+      <Text>{currentSpeed}</Text>
       <WebView
         style={styles.webview}
         ref={webRef}
-        source={{uri: 'http://172.21.34.137:5173/'}}
+        source={{uri: 'http://172.21.34.194:5173/'}}
         javaScriptEnabled={true}
         onLoad={() => native_to_web('WebView Loaded')}
         onError={errorHandler}
