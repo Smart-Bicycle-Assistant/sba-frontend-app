@@ -78,7 +78,7 @@ const App: React.FC = () => {
       <WebView
         style={styles.webview}
         ref={webRef}
-        source={{uri: 'http://172.21.34.194:5173/'}}
+        source={{uri: 'https://sba-frontend-web.vercel.app/'}}
         javaScriptEnabled={true}
         onLoad={() => native_to_web('WebView Loaded')}
         onError={errorHandler}
