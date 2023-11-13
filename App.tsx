@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Dimensions,
   Text,
-  PermissionStatus,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -12,7 +11,6 @@ import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
-import {check} from 'react-native-permissions';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -31,9 +29,23 @@ const App: React.FC = () => {
   const errorHandler = ({nativeEvent}: WebViewMessageEvent) =>
     console.warn('WebView error: ', nativeEvent);
 
-  const web_to_native = (event: WebViewMessageEvent) => {
-    console.log('받은 데이터(web_to_native) : ' + event.nativeEvent.data);
-  };
+  // const web_to_native = (event: WebViewMessageEvent) => {
+  //   console.log('Received data from WebView: ' + event.nativeEvent.data);
+  //   addEventListener('message', event => {
+  //     // 이벤트에서 데이터 추출
+  //     const receivedMessage = event.data;
+
+  //     // 데이터 처리
+  //     console.log('Received message:', receivedMessage);
+
+  //     // 원하는 동작 수행
+  //   });
+
+  //   // const responseMessage = 'Response from React Native';
+  //   // webRef.current?.injectJavaScript(
+  //   //   `window.postMessage(${JSON.stringify(responseMessage)}, '*');`,
+  //   // );
+  // };
 
   async function requestLocationPermission() {
     if (Platform.OS === 'android') {
@@ -81,7 +93,6 @@ const App: React.FC = () => {
           };
 
           native_to_web(JSON.stringify(locationData));
-          console.log(locationData);
         },
         error => {
           console.error('Error getting location:', error);
@@ -97,7 +108,7 @@ const App: React.FC = () => {
 
     sendLocationToWebView();
 
-    const locationInterval = setInterval(sendLocationToWebView, 6000);
+    const locationInterval = setInterval(sendLocationToWebView, 5000);
 
     return () => {
       clearInterval(locationInterval);
@@ -116,7 +127,9 @@ const App: React.FC = () => {
         javaScriptEnabled={true}
         onLoad={() => native_to_web('WebView Loaded')}
         onError={errorHandler}
-        onMessage={event => web_to_native(event)}
+        onMessage={() => {
+          console.log('onMessage');
+        }}
       />
     </SafeAreaView>
   );
