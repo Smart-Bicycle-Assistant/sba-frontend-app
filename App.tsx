@@ -1,10 +1,10 @@
 import React, {useRef, useEffect, useState} from 'react';
-import TcpSocket from "react-native-tcp-socket";
+import TcpSocket from 'react-native-tcp-socket';
 import {Buffer} from 'buffer';
 import {
   SafeAreaView,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   Text,
   PermissionsAndroid,
   Platform,
@@ -14,28 +14,35 @@ import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
 
-const deviceHeight = Dimensions.get('window').height;
-const deviceWidth = Dimensions.get('window').width;
-
 const App: React.FC = () => {
   const webRef = useRef<WebView | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
-  const server = TcpSocket.createServer(function(socket){
-    socket.on('data',(data:Buffer)=> {
-      console.log(data.length);
-      var offset=0;
-      var Width = data.readFloatBE(offset);
-      offset +=4;
-      var Height = data.readFloatBE(offset);
-      offset +=4;
-      var boxCount = data.readInt32BE(offset);
-      console.log("Width : ",Width," Height : ",Height," boxCount : ",boxCount);
-    })
 
-  }).listen({port:50000});
-  
+  const server = TcpSocket.createServer(function (socket) {
+    socket.on('data', (data: Buffer) => {
+      console.log(data.length);
+      var offset = 0;
+      var Width = data.readFloatBE(offset);
+      offset += 4;
+      var Height = data.readFloatBE(offset);
+      offset += 4;
+      var boxCount = data.readInt32BE(offset);
+      console.log(
+        'Width : ',
+        Width,
+        ' Height : ',
+        Height,
+        ' boxCount : ',
+        boxCount,
+      );
+    });
+  }).listen({port: 50000});
+
+  const deviceWidth = useWindowDimensions().width;
+  const deviceHeight = useWindowDimensions().height;
+
   const native_to_web = (data: string) => {
     const message = JSON.stringify(data);
     webRef.current?.injectJavaScript(`window.postMessage(${message}, '*');`);
@@ -136,7 +143,7 @@ const App: React.FC = () => {
       <Text>{latitude}</Text>
       <Text>{currentSpeed}</Text>
       <WebView
-        style={styles.webview}
+        style={{flex: 1, width: deviceWidth, height: deviceHeight}}
         ref={webRef}
         source={{uri: 'https://sba-frontend-web.vercel.app/'}}
         javaScriptEnabled={true}
@@ -158,8 +165,6 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
-    width: deviceWidth,
-    height: deviceHeight,
   },
 });
 
