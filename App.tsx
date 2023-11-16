@@ -1,4 +1,6 @@
 import React, {useRef, useEffect, useState} from 'react';
+import TcpSocket from "react-native-tcp-socket";
+import {Buffer} from 'buffer';
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,7 +22,20 @@ const App: React.FC = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
+  const server = TcpSocket.createServer(function(socket){
+    socket.on('data',(data:Buffer)=> {
+      console.log(data.length);
+      var offset=0;
+      var Width = data.readFloatBE(offset);
+      offset +=4;
+      var Height = data.readFloatBE(offset);
+      offset +=4;
+      var boxCount = data.readInt32BE(offset);
+      console.log("Width : ",Width," Height : ",Height," boxCount : ",boxCount);
+    })
 
+  }).listen({port:50000});
+  
   const native_to_web = (data: string) => {
     const message = JSON.stringify(data);
     webRef.current?.injectJavaScript(`window.postMessage(${message}, '*');`);
