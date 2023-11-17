@@ -1,4 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
+import {BackHandler} from 'react-native';
 import TcpSocket from 'react-native-tcp-socket';
 import {Buffer} from 'buffer';
 import {
@@ -93,6 +94,30 @@ const App: React.FC = () => {
     }
   }
 
+  const [isCanGoBack, setIsCanGoBack] = useState(false);
+
+  const onPressHardwareBackButton = () => {
+    if (webRef.current && isCanGoBack) {
+      webRef.current.goBack();
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      onPressHardwareBackButton,
+    );
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        onPressHardwareBackButton,
+      );
+    };
+  }, [isCanGoBack]);
+
   useEffect(() => {
     Geolocation.requestAuthorization();
     requestLocationPermission();
@@ -147,10 +172,31 @@ const App: React.FC = () => {
         ref={webRef}
         source={{uri: 'https://sba-frontend-web.vercel.app/'}}
         javaScriptEnabled={true}
+        injectedJavaScript={`
+        (function() {
+          function wrap(fn) {
+            return function wrapper() {
+              var res = fn.apply(this, arguments);
+              window.ReactNativeWebView.postMessage('navigationStateChange');
+              return res;
+            }
+          }
+    
+          history.pushState = wrap(history.pushState);
+          history.replaceState = wrap(history.replaceState);
+          window.addEventListener('popstate', function() {
+            window.ReactNativeWebView.postMessage('navigationStateChange');
+          });
+        })();
+    
+        true;
+      `}
         onLoad={() => native_to_web('WebView Loaded')}
         onError={errorHandler}
-        onMessage={() => {
-          console.log('onMessage');
+        onMessage={({nativeEvent: state}) => {
+          if (state.data === 'navigationStateChange') {
+            setIsCanGoBack(state.canGoBack);
+          }
         }}
       />
     </SafeAreaView>
