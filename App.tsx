@@ -38,6 +38,7 @@ const App: React.FC = () => {
         ' boxCount : ',
         boxCount,
       );
+      native_to_web(JSON.stringify({Width, Height, boxCount}));
     });
   }).listen({port: 50000});
 
@@ -155,7 +156,7 @@ const App: React.FC = () => {
 
     sendLocationToWebView();
 
-    const locationInterval = setInterval(sendLocationToWebView, 5000);
+    const locationInterval = setInterval(sendLocationToWebView, 1000);
 
     return () => {
       clearInterval(locationInterval);
@@ -164,9 +165,6 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{longitude}</Text>
-      <Text>{latitude}</Text>
-      <Text>{currentSpeed}</Text>
       <WebView
         style={{flex: 1, width: deviceWidth, height: deviceHeight}}
         ref={webRef}
