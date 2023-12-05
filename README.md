@@ -1,79 +1,50 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# S-BA (Smart Bicycle Assistant)
 
-# Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+![image](https://github.com/Smart-Bicycle-Assistant/sba-frontend-web/assets/86648265/439df8da-7b4c-40e5-8ea8-392d80e3cfa6)
 
-## Step 1: Start the Metro Server
+## 👩🏻‍💻 프로젝트 개요
+<b>S-BA(Smart Bicycle Assistant)</b>는 자전거에 특화된 All-In-One 통합 애플리케이션입니다. 
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+기존 자전거 관련 애플리케이션은 각각 장단점이 존재합니다. 네비게이션 기능이 필요하다면 카카오 맵, 주행에 집중하고 싶다면 스트라바, 삼성헬스 등을 쓰게 됩니다. 그러나 이렇게 애플리케이션을 나눠서 쓰게 되면 주행 기록이 여러 앱에 나눠서 저장되므로 자전거 소모품의 수명 관리에 어려움이 있습니다. 또한 이러한 애플리케이션은 자전거 주행 중에 사용자에게 화면 조작을 요구하여 위험한 로직이 존재합니다. 따라서 기존 자전거 관련 애플리케이션의 단점을 개선하고 장점을 모두 통합한 단일 앱을 제작하고 더 나아가 자전거 유지 보수 기능, 자전거 주행을 보조하는 단체 라이딩 추천 기능, 후방 차량 감지 기능 등 자전거에 유용한 새로운 기능 3가지를 탑재하여 더욱 사용성 있는 앱을 개발하고자 하였습니다.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+<br />
 
-```bash
-# using npm
-npm start
+## ⚒️ 기술 스택
+<img src="https://img.shields.io/badge/react native-61DAFB?style=for-the-badge&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white"/> 
 
-# OR using Yarn
-yarn start
-```
+<br />
 
-## Step 2: Start your Application
+## 📁 팀원 정보
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+ <table align="justify">
+<thead>
+<tr>
+<th style="text-align:left">Team</th>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Position</th>
+<th style="text-align:left">E-Mail</th>
+<th style="text-align:left">Github</th>
+</tr> 
+</thead>
+<tbody>
+     <tr>
+<td style="text-align:left">Team</td>
+<td style="text-align:left">김윤아</td>
+<td style="text-align:left">FrontEnd Developer</td>
+<td style="text-align:left">hanuuny@gmail.com</td>
+<td style="text-align:left"><a href="https://github.com/anttiey">
+<img src="http://img.shields.io/badge/hanuuny-655ced?style=social&logo=github&color=informational" style="height : auto; margin-left : 10px; margin-right : 10px;"/>
+</a></td>
+</tr>
+ <tr>
+<td style="text-align:left">Team</td>
+<td style="text-align:left">정희수</td>
+<td style="text-align:left">FrontEnd Developer</td>
+<td style="text-align:left">s007kk@ajou.ac.kr</td>
+<td style="text-align:left"><a href="https://github.com/heeeeee0129">
+<img src="http://img.shields.io/badge/heeeeee0129-655ced?style=social&logo=github&color=informational" style="height : auto; margin-left : 10px; margin-right : 10px;"/>
+</a></td>
+</tr>
+</tbody>
+</table>
