@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   StyleSheet,
   useWindowDimensions,
-  Text,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -20,25 +19,21 @@ const App: React.FC = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
+  const [Width, setWidth] = useState<number>(0);
+  const [Height, setHeight] = useState<number>(0);
+  const [boxCount, setBoxCount] = useState<number>(0);
 
   const server = TcpSocket.createServer(function (socket) {
     socket.on('data', (data: Buffer) => {
       console.log(data.length);
       var offset = 0;
-      var Width = data.readFloatBE(offset);
+      setWidth(data.readFloatBE(offset));
       offset += 4;
-      var Height = data.readFloatBE(offset);
+      setHeight(data.readInt32BE(offset)); // 얘는 차종류 - 1.차   2.버스   3.트럭
       offset += 4;
-      var boxCount = data.readInt32BE(offset);
-      console.log(
-        'Width : ',
-        Width,
-        ' Height : ',
-        Height,
-        ' boxCount : ',
-        boxCount,
-      );
-      native_to_web(JSON.stringify({Width, Height, boxCount}));
+      setBoxCount(data.readInt32BE(offset));
+
+      Width && Width > 450 ? setBoxCount(1) : setBoxCount(0);
     });
   }).listen({port: 50000});
 
@@ -52,24 +47,6 @@ const App: React.FC = () => {
 
   const errorHandler = ({nativeEvent}: WebViewMessageEvent) =>
     console.warn('WebView error: ', nativeEvent);
-
-  // const web_to_native = (event: WebViewMessageEvent) => {
-  //   console.log('Received data from WebView: ' + event.nativeEvent.data);
-  //   addEventListener('message', event => {
-  //     // 이벤트에서 데이터 추출
-  //     const receivedMessage = event.data;
-
-  //     // 데이터 처리
-  //     console.log('Received message:', receivedMessage);
-
-  //     // 원하는 동작 수행
-  //   });
-
-  //   // const responseMessage = 'Response from React Native';
-  //   // webRef.current?.injectJavaScript(
-  //   //   `window.postMessage(${JSON.stringify(responseMessage)}, '*');`,
-  //   // );
-  // };
 
   async function requestLocationPermission() {
     if (Platform.OS === 'android') {
@@ -138,6 +115,9 @@ const App: React.FC = () => {
             latitude: newLatitude,
             longitude: newLongitude,
             speed: newSpeed,
+            Width: Width,
+            Height: Height,
+            boxCount: boxCount,
           };
 
           native_to_web(JSON.stringify(locationData));
@@ -161,7 +141,7 @@ const App: React.FC = () => {
     return () => {
       clearInterval(locationInterval);
     };
-  }, []);
+  }, [Width, Height, boxCount]);
 
   return (
     <SafeAreaView style={styles.container}>
